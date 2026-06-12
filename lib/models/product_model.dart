@@ -3,14 +3,12 @@ class ProductModel {
   final String name;
   final double price;
   final String imageUrl;
-  final String description;
 
   ProductModel({
     required this.id,
     required this.name,
     required this.price,
     required this.imageUrl,
-    required this.description,
   });
 
   Map<String, dynamic> toJson() {
@@ -19,7 +17,6 @@ class ProductModel {
       'name': name,
       'price': price,
       'imageUrl': imageUrl,
-      'description': description,
     };
   }
 
@@ -29,7 +26,6 @@ class ProductModel {
       name: json['name'] as String,
       price: (json['price'] as num).toDouble(),
       imageUrl: json['imageUrl'] as String,
-      description: json['description'] as String? ?? '',
     );
   }
 

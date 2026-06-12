@@ -16,7 +16,6 @@ class CartItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final product = item.product;
 
     return BlocConsumer<CartRemoveCubit, CartRemoveState>(
       listener: (context, state) {

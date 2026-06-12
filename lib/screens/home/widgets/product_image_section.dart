@@ -10,7 +10,8 @@ class ProductImageSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return AspectRatio(
+      aspectRatio: 1.1,
       child: Stack(
         children: [
           Positioned.fill(

@@ -20,7 +20,7 @@ class CartAddProductCubit extends Cubit<CartAddProductState> {
     if (quantity <= 0) return;
 
     emit(CartAddProductInProgress());
-
+    await Future.delayed(const Duration(seconds: 1));
     try {
       final currentItems = await _repository.loadCart();
       final existingIndex = currentItems.indexWhere(

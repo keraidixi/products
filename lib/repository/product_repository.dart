@@ -11,8 +11,6 @@ class ProductRepository {
         price: 1099.99,
         imageUrl:
             'https://images.unsplash.com/photo-1510557880182-3d4d3cba35a5?w=500&auto=format&fit=crop&q=80',
-        description:
-            'Experience titanium design, ground-breaking A17 Pro chip, and the most powerful iPhone camera system ever.',
       ),
       ProductModel(
         id: '2',
@@ -20,8 +18,6 @@ class ProductRepository {
         price: 2499.00,
         imageUrl:
             'https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=500&auto=format&fit=crop&q=80',
-        description:
-            'The most advanced chips ever built for a personal computer. Phenomenal battery life and a stunning Liquid Retina XDR display.',
       ),
       ProductModel(
         id: '3',
@@ -29,8 +25,6 @@ class ProductRepository {
         price: 398.00,
         imageUrl:
             'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&auto=format&fit=crop&q=80',
-        description:
-            'Industry-leading noise cancellation, exceptional sound quality, and crystal-clear hands-free calling.',
       ),
       ProductModel(
         id: '4',
@@ -38,8 +32,6 @@ class ProductRepository {
         price: 1099.00,
         imageUrl:
             'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=500&auto=format&fit=crop&q=80',
-        description:
-            'Astonishing performance, incredibly advanced displays, superfast wireless connectivity, and next-level Apple Pencil capabilities.',
       ),
       ProductModel(
         id: '5',
@@ -47,8 +39,6 @@ class ProductRepository {
         price: 99.99,
         imageUrl:
             'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=500&auto=format&fit=crop&q=80',
-        description:
-            'An icon remastered. Feel every moment of your workflow with even more precision, tactility, and performance.',
       ),
       ProductModel(
         id: '6',
@@ -56,8 +46,6 @@ class ProductRepository {
         price: 199.00,
         imageUrl:
             'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&auto=format&fit=crop&q=80',
-        description:
-            'A full metal QMK/VIA custom mechanical keyboard. Beautifully designed CNC aluminum body with premium tactile switches.',
       ),
     ];
   }

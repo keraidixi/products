@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../../cubit/cart/add_product/add_cart_cubit.dart';
-import '../../cubit/cart/add_product/add_cart_state.dart';
 import '../../cubit/product/product_cubit.dart';
 import '../../cubit/product/product_state.dart';
 import 'widgets/cart_icon_badge.dart';
@@ -15,31 +13,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<CartAddProductCubit, CartAddProductState>(
-      listener: (context, state) {
-        if (state is CartAddProductSuccess) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.message),
-              duration: const Duration(seconds: 1),
-            ),
-          );
-        }
-
-        if (state is CartAddProductFailure) {
-          ScaffoldMessenger.of(context).clearSnackBars();
-
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(state.errorMessage),
-              backgroundColor: Colors.red,
-            ),
-          );
-        }
-      },
-      child: Scaffold(
+    return  Scaffold(
         appBar: AppBar(
           title: Text(
             'Product',
@@ -97,9 +71,9 @@ class HomeScreen extends StatelessWidget {
                 itemCount: state.products.length,
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 2,
-                  childAspectRatio: 0.70,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
+                  mainAxisExtent: 330
                 ),
                 itemBuilder: (context, index) {
                   return ProductCard(product: state.products[index]);
@@ -109,7 +83,6 @@ class HomeScreen extends StatelessWidget {
             return const SizedBox();
           },
         ),
-      ),
     );
   }
 }
