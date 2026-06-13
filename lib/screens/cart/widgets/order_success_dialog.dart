@@ -17,7 +17,6 @@ class _OrderSuccessDialogState extends State<OrderSuccessDialog> {
     Future.delayed(const Duration(seconds: 2), () {
       if (!mounted) return;
 
-      Navigator.pop(context);
       Navigator.of(context).popUntil((route) => route.isFirst);
     });
   }

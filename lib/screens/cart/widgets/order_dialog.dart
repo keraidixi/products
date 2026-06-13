@@ -16,12 +16,22 @@ class OrderLoadingDialog extends StatelessWidget {
         if (state is OrderSuccess) {
           context.read<CartClearCubit>().clearCart();
 
-          Navigator.pop(context);
+          final navigator = Navigator.of(context);
+          navigator.pop();
 
           showDialog(
-            context: context,
+            context: navigator.context,
             barrierDismissible: false,
             builder: (_) => const OrderSuccessDialog(),
+          );
+        } else if (state is OrderFailure) {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(state.errorMessage),
+              backgroundColor: Colors.redAccent,
+              behavior: SnackBarBehavior.floating,
+            ),
           );
         }
       },

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../cubit/cart/total/total_price_cubit.dart';
 import '../../../cubit/cart/total/total_price_state.dart';
+import '../../../cubit/cart/clear/clear_cart_cubit.dart';
 import 'order_dialog.dart';
 
 class CartSummary extends StatelessWidget {
@@ -53,10 +54,14 @@ class CartSummary extends StatelessWidget {
                   onPressed: () {
                     onPlaceOrder(totalPrice);
 
+                    final cartClearCubit = context.read<CartClearCubit>();
                     showDialog(
                       context: context,
                       barrierDismissible: false,
-                      builder: (_) => const OrderLoadingDialog(),
+                      builder: (_) => BlocProvider.value(
+                        value: cartClearCubit,
+                        child: const OrderLoadingDialog(),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(

@@ -25,79 +25,82 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text("My Orders")),
-      body: BlocConsumer<OrderCubit, OrderState>(
-        listener: (context, state) {
-          if (state is OrderFailure) {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(
-                  state.errorMessage,
-                  style: GoogleFonts.outfit(fontWeight: FontWeight.w500),
+      body: SafeArea(
+        top: false,
+        child: BlocConsumer<OrderCubit, OrderState>(
+          listener: (context, state) {
+            if (state is OrderFailure) {
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    state.errorMessage,
+                    style: GoogleFonts.outfit(fontWeight: FontWeight.w500),
+                  ),
+                  backgroundColor: Colors.redAccent,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-                backgroundColor: Colors.redAccent,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+              );
+            }
+          },
+          builder: (context, state) {
+            if (state is OrderInProgress) {
+              return const Center(
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(Color(0xFF818CF8)),
                 ),
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state is OrderInProgress) {
-            return const Center(
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(Color(0xFF818CF8)),
-              ),
-            );
-          }
-
-          if (state is OrderSuccess) {
-            final orders = state.orders;
-
-            if (orders.isEmpty) {
-              return const OrderEmptyView();
+              );
             }
 
-            return ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: orders.length,
-              itemBuilder: (context, index) {
-                return OrderCard(order: orders[index]);
-              },
-            );
-          }
+            if (state is OrderSuccess) {
+              final orders = state.orders;
 
-          if (state is OrderFailure) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(Icons.error_outline, size: 64, color: Colors.redAccent),
-                  const SizedBox(height: 16),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    child: Text(
-                      state.errorMessage,
-                      textAlign: TextAlign.center,
-                      style: GoogleFonts.outfit(fontSize: 16),
+              if (orders.isEmpty) {
+                return const OrderEmptyView();
+              }
+
+              return ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: orders.length,
+                itemBuilder: (context, index) {
+                  return OrderCard(order: orders[index]);
+                },
+              );
+            }
+
+            if (state is OrderFailure) {
+              return Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Icon(Icons.error_outline, size: 64, color: Colors.redAccent),
+                    const SizedBox(height: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Text(
+                        state.errorMessage,
+                        textAlign: TextAlign.center,
+                        style: GoogleFonts.outfit(fontSize: 16),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: () => context.read<OrderCubit>().loadOrders(),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF6366F1),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: () => context.read<OrderCubit>().loadOrders(),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF6366F1),
+                      ),
+                      child: const Text('Try Again'),
                     ),
-                    child: const Text('Try Again'),
-                  ),
-                ],
-              ),
-            );
-          }
-          return const SizedBox();
-        },
+                  ],
+                ),
+              );
+            }
+            return const SizedBox();
+          },
+        ),
       ),
     );
   }

@@ -7,6 +7,8 @@ class CartLoadCubit extends Cubit<CartLoadState> {
 
   CartLoadCubit(this._repository) : super(CartLoadInitial());
 
+  CartRepository get cartRepository => _repository;
+
   void loadCart() async {
     emit(CartLoadInProgress());
     try {

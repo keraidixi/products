@@ -40,7 +40,8 @@ class CartIconBadge extends StatelessWidget {
                     color: Color(0xFF34D399),
                     shape: BoxShape.circle,
                   ),
-                  constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                  constraints: const BoxConstraints(
+                      minWidth: 18, minHeight: 18),
                   child: Text(
                     '$total',
                     textAlign: TextAlign.center,

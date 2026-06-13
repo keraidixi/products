@@ -19,7 +19,7 @@ class CartAddProductCubit extends Cubit<CartAddProductState> {
   void addProductWithQuantity(ProductModel product, int quantity) async {
     if (quantity <= 0) return;
 
-    emit(CartAddProductInProgress());
+    emit(CartAddProductInProgress(product.id));
     await Future.delayed(const Duration(seconds: 1));
     try {
       final currentItems = await _repository.loadCart();

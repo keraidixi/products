@@ -12,7 +12,7 @@ class CartRemoveCubit extends Cubit<CartRemoveState> {
     : super(CartRemoveInitial());
 
   void removeProduct(ProductModel product) async {
-    emit(CartRemoveInProgress());
+    emit(CartRemoveInProgress(product.id));
     await Future.delayed(Duration(seconds: 2));
     try {
       await _repository.deleteItem(product.id);

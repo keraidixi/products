@@ -6,11 +6,13 @@ class OrderModel {
   final double totalAmount;
   final DateTime orderDateTime;
 
+
   OrderModel({
     required this.id,
     required this.items,
     required this.totalAmount,
     required this.orderDateTime,
+
   });
 
   Map<String, dynamic> toJson() {
@@ -19,6 +21,7 @@ class OrderModel {
       'items': items.map((item) => item.toJson()).toList(),
       'totalAmount': totalAmount,
       'orderDateTime': orderDateTime.toIso8601String(),
+
     };
   }
 
@@ -30,6 +33,7 @@ class OrderModel {
           .toList(),
       totalAmount: (json['totalAmount'] as num).toDouble(),
       orderDateTime: DateTime.parse(json['orderDateTime'] as String),
+
     );
   }
 }

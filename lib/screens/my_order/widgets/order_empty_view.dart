@@ -10,11 +10,7 @@ class OrderEmptyView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            Icons.receipt_long_outlined,
-            size: 80,
-            color: Colors.white24,
-          ),
+          Icon(Icons.receipt_long_outlined, size: 80, color: Colors.white24),
           const SizedBox(height: 20),
           Text(
             "No Orders Yet",
@@ -28,10 +24,7 @@ class OrderEmptyView extends StatelessWidget {
           Text(
             "You haven't placed any orders yet.\nStart shopping to see your orders here.",
             textAlign: TextAlign.center,
-            style: GoogleFonts.outfit(
-              fontSize: 14,
-              color: Colors.white54,
-            ),
+            style: GoogleFonts.outfit(fontSize: 14, color: Colors.white54),
           ),
         ],
       ),
