@@ -1,15 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:product/cubit/cart/cart_cubit.dart';
 import 'remove_cart_state.dart';
 import '../../../models/product_model.dart';
 import '../../../repository/cart_repository.dart';
-import '../load/load_cart_cubit.dart';
 
 class CartRemoveCubit extends Cubit<CartRemoveState> {
   final CartRepository _repository;
-  final CartLoadCubit _cartLoadCubit;
+  final CartCubit _cartCubit;
 
-  CartRemoveCubit(this._repository, this._cartLoadCubit)
-    : super(CartRemoveInitial());
+  CartRemoveCubit(this._repository, this._cartCubit)
+      : super(CartRemoveInitial());
 
   void removeProduct(ProductModel product) async {
     emit(CartRemoveInProgress(product.id));
@@ -19,7 +19,7 @@ class CartRemoveCubit extends Cubit<CartRemoveState> {
 
       emit(CartRemoveSuccess('${product.name} removed from cart'));
 
-      _cartLoadCubit.loadCart();
+      _cartCubit.loadCart();
     } catch (e) {
       emit(CartRemoveFailure('Failed to remove product: ${e.toString()}'));
     }

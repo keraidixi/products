@@ -1,15 +1,15 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:product/cubit/cart/cart_cubit.dart';
 import 'quantity_cart_state.dart';
 import '../../../models/cart_item_model.dart';
 import '../../../models/product_model.dart';
 import '../../../repository/cart_repository.dart';
-import '../load/load_cart_cubit.dart';
 
 class CartQuantityCubit extends Cubit<CartQuantityState> {
   final CartRepository _repository;
-  final CartLoadCubit _cartLoadCubit;
+  final CartCubit _cartCubit;
 
-  CartQuantityCubit(this._repository, this._cartLoadCubit)
+  CartQuantityCubit(this._repository, this._cartCubit)
       : super(CartQuantityInitial());
 
   void updateQuantity(ProductModel product, int quantity) async {
@@ -30,7 +30,7 @@ class CartQuantityCubit extends Cubit<CartQuantityState> {
         }
       }
       emit(CartQuantitySuccess());
-      _cartLoadCubit.loadCart();
+      _cartCubit.loadCart();
     } catch (e) {
       emit(CartQuantityFailure('Failed to update quantity: ${e.toString()}'));
     }

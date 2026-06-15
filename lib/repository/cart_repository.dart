@@ -12,7 +12,7 @@ class CartRepository {
       final rawData = _cartBox.get(key);
       if (rawData != null) {
         final Map<String, dynamic> jsonMap =
-            Map<String, dynamic>.from(rawData as Map);
+        Map<String, dynamic>.from(rawData as Map);
         items.add(CartItemModel.fromJson(jsonMap));
       }
     }

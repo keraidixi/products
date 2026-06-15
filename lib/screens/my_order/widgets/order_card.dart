@@ -16,7 +16,7 @@ class OrderCard extends StatelessWidget {
     ).format(order.orderDateTime);
     final totalItems = order.items.fold<int>(
       0,
-      (sum, item) => sum + item.quantity,
+          (sum, item) => sum + item.quantity,
     );
 
     return Container(

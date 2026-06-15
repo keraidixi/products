@@ -37,6 +37,7 @@ class OrderCubit extends Cubit<OrderState> {
 
     emit(OrderInProgress());
     try {
+      // Small simulated delay for feedback animation in UI
       await Future.delayed(const Duration(milliseconds: 600));
 
       final orderId = 'ORD-${DateTime.now().millisecondsSinceEpoch}';
@@ -45,7 +46,6 @@ class OrderCubit extends Cubit<OrderState> {
         items: items,
         totalAmount: totalAmount,
         orderDateTime: DateTime.now(),
-
       );
 
       await _ordersBox.put(orderId, newOrder.toJson());

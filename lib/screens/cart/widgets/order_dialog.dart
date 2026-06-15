@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:product/cubit/cart/cart_cubit.dart';
 
 import '../../../cubit/order/order_cubit.dart';
 import '../../../cubit/order/order_state.dart';
-import '../../../cubit/cart/clear/clear_cart_cubit.dart';
 import 'order_success_dialog.dart';
 
 class OrderLoadingDialog extends StatelessWidget {
@@ -14,13 +14,13 @@ class OrderLoadingDialog extends StatelessWidget {
     return BlocConsumer<OrderCubit, OrderState>(
       listener: (context, state) {
         if (state is OrderSuccess) {
-          context.read<CartClearCubit>().clearCart();
+          context.read<CartCubit>().clearCart();
 
           final navigator = Navigator.of(context);
           navigator.pop();
 
           showDialog(
-            context: navigator.context,
+            context: context,
             barrierDismissible: false,
             builder: (_) => const OrderSuccessDialog(),
           );

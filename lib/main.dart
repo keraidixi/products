@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import 'cubit/cart/load/load_cart_cubit.dart';
+import 'cubit/cart/cart_cubit.dart';
 import 'cubit/order/order_cubit.dart';
 import 'repository/cart_repository.dart';
 import 'screens/home/home_screen.dart';
@@ -44,8 +44,11 @@ class MyApp extends StatelessWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider<CartLoadCubit>(
-          create: (context) => CartLoadCubit(cartRepository)..loadCart(),
+        RepositoryProvider<CartRepository>(
+          create: (_) => cartRepository,
+        ),
+        BlocProvider<CartCubit>(
+          create: (context) => CartCubit(cartRepository)..loadCart(),
         ),
         BlocProvider<OrderCubit>(
           create: (context) => OrderCubit(ordersBox)..loadOrders(),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:product/cubit/cart/cart_cubit.dart';
+import 'package:product/cubit/cart/cart_state.dart';
 
-import '../../../cubit/cart/load/load_cart_cubit.dart';
-import '../../../cubit/cart/load/load_cart_state.dart';
 import '../../cart/cart_screen.dart';
 
 class CartIconBadge extends StatelessWidget {
@@ -10,11 +10,11 @@ class CartIconBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CartLoadCubit, CartLoadState>(
+    return BlocBuilder<CartCubit, CartState>(
       builder: (context, state) {
         int total = 0;
 
-        if (state is CartLoadSuccess) {
+        if (state is CartSuccess) {
           total = state.items.fold(0, (s, e) => s + e.quantity);
         }
 

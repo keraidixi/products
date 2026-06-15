@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:product/cubit/cart/cart_cubit.dart';
+import 'package:product/cubit/cart/cart_state.dart';
 
-import '../../../cubit/cart/total/total_price_cubit.dart';
-import '../../../cubit/cart/total/total_price_state.dart';
-import '../../../cubit/cart/clear/clear_cart_cubit.dart';
 import 'order_dialog.dart';
 
 class CartSummary extends StatelessWidget {
@@ -19,11 +18,11 @@ class CartSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<CartTotalPriceCubit, CartTotalPriceState>(
+    return BlocBuilder<CartCubit, CartState>(
       builder: (context, state) {
         double totalPrice = 0;
 
-        if (state is CartTotalPriceSuccess) {
+        if (state is CartSuccess) {
           totalPrice = state.totalPrice;
         }
 
@@ -54,14 +53,10 @@ class CartSummary extends StatelessWidget {
                   onPressed: () {
                     onPlaceOrder(totalPrice);
 
-                    final cartClearCubit = context.read<CartClearCubit>();
                     showDialog(
                       context: context,
                       barrierDismissible: false,
-                      builder: (_) => BlocProvider.value(
-                        value: cartClearCubit,
-                        child: const OrderLoadingDialog(),
-                      ),
+                      builder: (_) => const OrderLoadingDialog(),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -81,11 +76,11 @@ class CartSummary extends StatelessWidget {
   }
 
   Widget _row(
-    String label,
-    String value, {
-    Color valueColor = Colors.white,
-    double fontSize = 16,
-  }) {
+      String label,
+      String value, {
+        Color valueColor = Colors.white,
+        double fontSize = 16,
+      }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

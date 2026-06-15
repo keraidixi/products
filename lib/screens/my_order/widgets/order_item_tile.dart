@@ -13,7 +13,6 @@ class OrderItemTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final product = item.product;
-    final lineTotal = product.price * item.quantity;
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -34,7 +33,7 @@ class OrderItemTile extends StatelessWidget {
                     width: 60,
                     height: 60,
                     child:
-                        const Icon(Icons.image, size: 24, color: Colors.white38),
+                    const Icon(Icons.image, size: 24, color: Colors.white38),
                   ),
                 ),
               ),
@@ -57,12 +56,24 @@ class OrderItemTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  '\$${product.price.toStringAsFixed(2)} each',
-                  style: GoogleFonts.outfit(
-                    color: Colors.white54,
-                    fontSize: 13,
-                  ),
+                Row(
+                  children: [
+                    Text(
+                      '\$${product.price.toStringAsFixed(2)} each',
+                      style: GoogleFonts.outfit(
+                        color: Colors.white54,
+                        fontSize: 13,
+                      ),
+                    ),
+                    const SizedBox(width: 130,),
+                    Text(
+                      'Qty : ${item.quantity}',
+                      style: GoogleFonts.outfit(
+                        color: Colors.white54,
+                        fontSize: 15,
+                      ),
+                    )
+                  ],
                 ),
               ],
             ),

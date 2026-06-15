@@ -69,7 +69,7 @@ class ProductCard extends StatelessWidget {
                   builder: (context, state) {
                     final isLoading =
                         state is CartAddProductInProgress &&
-                        state.productId == product.id;
+                            state.productId == product.id;
 
                     return SizedBox(
                       width: double.infinity,
@@ -89,13 +89,13 @@ class ProductCard extends StatelessWidget {
                         ),
                         icon: isLoading
                             ? const SizedBox(
-                                width: 14,
-                                height: 14,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                  strokeWidth: 2,
-                                ),
-                              )
+                          width: 14,
+                          height: 14,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
                             : const Icon(Icons.add_shopping_cart, size: 16),
                         label: Text(
                           isLoading ? 'Adding...' : 'Add to Cart',
