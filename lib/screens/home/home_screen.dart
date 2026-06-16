@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:product/cubit/cart/cart_cubit.dart';
-import 'package:product/repository/product_repository.dart';
 
 import '../../cubit/cart/add_product/add_cart_cubit.dart';
 import '../../cubit/product/product_cubit.dart';
@@ -19,16 +18,9 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final cartCubit = context.read<CartCubit>();
 
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<ProductCubit>(
-          create: (_) => ProductCubit(ProductRepository())..loadProducts(),
-        ),
-        BlocProvider<CartAddProductCubit>(
+    return BlocProvider<CartAddProductCubit>(
           create: (_) =>
-              CartAddProductCubit(cartCubit.repository,cartCubit)
-        ),
-      ],
+              CartAddProductCubit(cartCubit.repository,cartCubit),
       child: Scaffold(
         appBar: AppBar(
           title: Text(

@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:product/cubit/cart/cart_state.dart';
 
+import '../../cubit/auth/auth_cubit.dart';
+import '../../cubit/auth/auth_state.dart';
 import '../../cubit/cart/cart_cubit.dart';
-import '../../cubit/cart/quantity/quantity_cart_cubit.dart';
+import '../../cubit/cart/quantity_update/quantity_cart_cubit.dart';
 import '../../cubit/cart/remove/remove_cart_cubit.dart';
 import '../../cubit/order/order_cubit.dart';
 
@@ -23,7 +25,16 @@ class CartScreen extends StatelessWidget {
       double totalPrice,
       ) {
     if (items.isEmpty) return;
-    context.read<OrderCubit>().placeOrder(items, totalPrice);
+
+    final authState = context.read<AuthCubit>().state;
+
+    if (authState is AuthSuccess) {
+      context.read<OrderCubit>().placeOrder(
+        items,
+        totalPrice,
+        authState.email,
+      );
+    }
   }
 
   @override

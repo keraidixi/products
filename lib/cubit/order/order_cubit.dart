@@ -9,26 +9,39 @@ class OrderCubit extends Cubit<OrderState> {
 
   OrderCubit(this._ordersBox) : super(OrderInitial());
 
-  void loadOrders() {
+  void loadOrders(String userEmail) {
     emit(OrderInProgress());
+
     try {
       final List<OrderModel> orders = [];
+
       final keys = _ordersBox.keys.toList();
+
       for (var key in keys) {
         final rawData = _ordersBox.get(key);
+
         if (rawData != null) {
-          final Map<String, dynamic> jsonMap = Map<String, dynamic>.from(rawData as Map);
-          orders.add(OrderModel.fromJson(jsonMap));
+          final order = OrderModel.fromJson(Map<String, dynamic>.from(rawData));
+
+          if (order.email == userEmail) {
+            orders.add(order);
+          }
         }
       }
+
       orders.sort((a, b) => b.orderDateTime.compareTo(a.orderDateTime));
+
       emit(OrderSuccess(orders));
     } catch (e) {
-      emit(OrderFailure('Failed to load orders: ${e.toString()}'));
+      emit(OrderFailure(e.toString()));
     }
   }
 
-  void placeOrder(List<CartItemModel> items, double totalAmount) async {
+  void placeOrder(
+    List<CartItemModel> items,
+    double totalAmount,
+    String email,
+  ) async {
     final currentState = state;
     List<OrderModel> currentOrders = [];
     if (currentState is OrderSuccess) {
@@ -37,12 +50,12 @@ class OrderCubit extends Cubit<OrderState> {
 
     emit(OrderInProgress());
     try {
-      // Small simulated delay for feedback animation in UI
       await Future.delayed(const Duration(milliseconds: 600));
 
       final orderId = 'ORD-${DateTime.now().millisecondsSinceEpoch}';
       final newOrder = OrderModel(
         id: orderId,
+        email: email,
         items: items,
         totalAmount: totalAmount,
         orderDateTime: DateTime.now(),

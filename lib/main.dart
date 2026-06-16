@@ -3,16 +3,31 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:firebase_core/firebase_core.dart';
 
+import 'cubit/auth/auth_cubit.dart';
 import 'cubit/cart/cart_cubit.dart';
 import 'cubit/order/order_cubit.dart';
+import 'cubit/auth/auth_state.dart';
+import 'cubit/product/product_cubit.dart';
+
+import 'models/user_model.dart';
+import 'repository/product_repository.dart';
 import 'repository/cart_repository.dart';
+import 'repository/auth_repository.dart';
+import 'screens/login/login_screen.dart';
 import 'screens/home/home_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  await Firebase.initializeApp();
+
   await Hive.initFlutter();
+
+  Hive.registerAdapter(UserModelAdapter());
+
+  final userBox = await Hive.openBox<UserModel>('user_box');
 
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
 
@@ -29,29 +44,36 @@ void main() async {
   final cartBox = await Hive.openBox('cart_box');
   final ordersBox = await Hive.openBox('orders_box');
 
-  runApp(MyApp(cartBox: cartBox, ordersBox: ordersBox));
+  runApp(MyApp(cartBox: cartBox, ordersBox: ordersBox, userBox: userBox));
 }
 
 class MyApp extends StatelessWidget {
   final Box cartBox;
   final Box ordersBox;
+  final Box<UserModel> userBox;
 
-  const MyApp({super.key, required this.cartBox, required this.ordersBox});
+  const MyApp({
+    super.key,
+    required this.cartBox,
+    required this.ordersBox,
+    required this.userBox,
+  });
 
   @override
   Widget build(BuildContext context) {
     final cartRepository = CartRepository(cartBox);
+    final authRepository = AuthRepository(userBox);
 
     return MultiBlocProvider(
       providers: [
-        RepositoryProvider<CartRepository>(
-          create: (_) => cartRepository,
-        ),
+        RepositoryProvider<CartRepository>(create: (_) => cartRepository),
         BlocProvider<CartCubit>(
-          create: (context) => CartCubit(cartRepository)..loadCart(),
+          create: (context) => CartCubit(cartRepository),
         ),
-        BlocProvider<OrderCubit>(
-          create: (context) => OrderCubit(ordersBox)..loadOrders(),
+        BlocProvider<OrderCubit>(create: (context) => OrderCubit(ordersBox)),
+        BlocProvider<AuthCubit>(create: (context) => AuthCubit(authRepository)),
+        BlocProvider<ProductCubit>(
+          create: (_) => ProductCubit(ProductRepository()),
         ),
       ],
       child: MaterialApp(
@@ -92,7 +114,15 @@ class MyApp extends StatelessWidget {
           ),
         ),
 
-        home: const HomeScreen(),
+        home: BlocBuilder<AuthCubit, AuthState>(
+          builder: (context, state) {
+            if (state is AuthSuccess) {
+              return const HomeScreen();
+            }
+
+            return LoginScreen();
+          },
+        ),
       ),
     );
   }

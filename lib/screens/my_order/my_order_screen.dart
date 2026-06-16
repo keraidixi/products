@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import '../../cubit/auth/auth_cubit.dart';
+import '../../cubit/auth/auth_state.dart';
 import '../../cubit/order/order_cubit.dart';
 import '../../cubit/order/order_state.dart';
 import 'widgets/order_card.dart';
@@ -18,7 +20,14 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<OrderCubit>().loadOrders();
+
+    Future.microtask(() {
+      final authState = context.read<AuthCubit>().state;
+
+      if (authState is AuthSuccess) {
+        context.read<OrderCubit>().loadOrders(authState.email);
+      }
+    });
   }
 
   @override
@@ -88,10 +97,13 @@ class _MyOrderScreenState extends State<MyOrderScreen> {
                     ),
                     const SizedBox(height: 16),
                     ElevatedButton(
-                      onPressed: () => context.read<OrderCubit>().loadOrders(),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF6366F1),
-                      ),
+                      onPressed: () {
+                        final authState = context.read<AuthCubit>().state;
+
+                        if (authState is AuthSuccess) {
+                          context.read<OrderCubit>().loadOrders(authState.email);
+                        }
+                      },
                       child: const Text('Try Again'),
                     ),
                   ],

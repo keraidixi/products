@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../cubit/cart/remove/remove_cart_cubit.dart';
 import '../../../cubit/cart/remove/remove_cart_state.dart';
 
-import '../../../cubit/cart/quantity/quantity_cart_cubit.dart';
-import '../../../cubit/cart/quantity/quantity_cart_state.dart';
+import '../../../cubit/cart/quantity_update/quantity_cart_cubit.dart';
+import '../../../cubit/cart/quantity_update/quantity_cart_state.dart';
 
 import '../../../models/cart_item_model.dart';
 
