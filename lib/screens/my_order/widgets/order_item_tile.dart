@@ -65,7 +65,7 @@ class OrderItemTile extends StatelessWidget {
                         fontSize: 13,
                       ),
                     ),
-                    const SizedBox(width: 130,),
+                    const Spacer(),
                     Text(
                       'Qty : ${item.quantity}',
                       style: GoogleFonts.outfit(

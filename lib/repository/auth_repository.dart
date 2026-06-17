@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:hive/hive.dart';
 
-import '../models/user_model.dart';
+import '../models/auth_model.dart';
 
 class AuthRepository {
   final Box<UserModel> box;
@@ -17,8 +17,7 @@ class AuthRepository {
       String phone,
       ) async {
     try {
-      final credential =
-      await _auth.createUserWithEmailAndPassword(
+      final credential = await _auth.createUserWithEmailAndPassword(
         email: email,
         password: password,
       );
@@ -34,31 +33,35 @@ class AuthRepository {
       );
 
       return true;
-    } on FirebaseAuthException {
-      return false;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'email-already-in-use') {
+        throw Exception("User already exists");
+      } else if (e.code == 'weak-password') {
+        throw Exception("Password is too weak");
+      } else if (e.code == 'invalid-email') {
+        throw Exception("Invalid email");
+      }
+
+      throw Exception(e.message ?? "Signup failed");
     }
   }
 
-  Future<UserModel?> login(
-      String email,
-      String password,
-      ) async {
+  Future<UserModel?> login(String email, String password) async {
+    final userExists = box.values.any((user) => user.email == email);
+
+    if (!userExists) {
+      throw Exception("Please signup first");
+    }
+
     try {
-      final credential =
-      await _auth.signInWithEmailAndPassword(
+      final credential = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
 
-      final UserModel? user =
-      box.get(credential.user!.uid);
-
-      if (user == null) return null;
-
-      return user;
-
+      return box.get(credential.user!.uid);
     } on FirebaseAuthException {
-      return null;
+      throw Exception("Invalid email or password");
     }
   }
 

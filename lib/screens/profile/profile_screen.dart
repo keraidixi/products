@@ -18,6 +18,14 @@ class ProfileScreen extends StatelessWidget {
 
       body: BlocBuilder<AuthCubit, AuthState>(
         builder: (context, state) {
+          if (state is AuthInProgress) {
+            return const Center(
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation(Color(0xFF818CF8)),
+              ),
+            );
+          }
+
           if (state is AuthSuccess) {
             return Padding(
               padding: const EdgeInsets.all(20),
@@ -98,7 +106,7 @@ class ProfileScreen extends StatelessWidget {
                                   },
                                   child: const Text("Cancel"),
                                 ),
-                                ElevatedButton(
+                                TextButton(
                                   onPressed: () {
                                     Navigator.pop(dialogContext);
 

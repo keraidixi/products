@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:hive/hive.dart';
 import 'package:product/cubit/cart/cart_state.dart';
 
 import '../../cubit/auth/auth_cubit.dart';
@@ -52,6 +53,10 @@ class CartScreen extends StatelessWidget {
         BlocProvider<CartRemoveCubit>(
           create: (_) =>
               CartRemoveCubit(repository, cartCubit),
+        ),
+        BlocProvider<OrderCubit>(
+          create: (context) =>
+              OrderCubit(Hive.box('orders_box'), context.read<CartCubit>()),
         ),
       ],
       child: Scaffold(

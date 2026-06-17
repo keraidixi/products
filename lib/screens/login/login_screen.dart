@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:product/cubit/auth/login/login_state.dart';
 
 import '../../cubit/auth/auth_cubit.dart';
-import '../../cubit/auth/auth_state.dart';
-import '../../cubit/product/product_cubit.dart';
+import '../../cubit/auth/login/login_cubit.dart';
+import '../../repository/auth_repository.dart';
+import '../../repository/cart_repository.dart';
 import '../home/home_screen.dart';
 import '../signup/signup_screen.dart';
 
@@ -15,54 +17,65 @@ class LoginScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Login")),
-      body: BlocConsumer<AuthCubit, AuthState>(
+    return BlocProvider<LoginCubit>(
+      create: (context) => LoginCubit(
+        context.read<AuthRepository>(),
+        context.read<CartRepository>(),
+      ),
+      child: Scaffold(
+      body: BlocConsumer<LoginCubit, LoginState>(
         listener: (context, state) {
-          context.read<ProductCubit>().loadProducts();
+          if (state is LoginSuccess) {
+            context.read<AuthCubit>().checkLogin();
 
-          if (state is AuthSuccess) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(builder: (_) => const HomeScreen()),
-            );
+            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
           }
 
-          if (state is AuthFailure) {
+          if (state is LoginFailure) {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.message)));
           }
         },
         builder: (context, state) {
-          if (state is AuthInProgress) {
+          if (state is LoginInProgress) {
             return const Center(child: CircularProgressIndicator());
           }
 
           return Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
+                Text('Login', style: TextStyle(fontSize: 20)),
+                const SizedBox(height: 50),
                 TextField(
                   controller: emailController,
-                  decoration: const InputDecoration(labelText: "Email"),
+                  decoration: const InputDecoration(hintText: "Email"),
                 ),
                 TextField(
                   controller: passController,
-                  decoration: const InputDecoration(labelText: "Password"),
+                  decoration: const InputDecoration(hintText: "Password"),
                 ),
-                const SizedBox(height: 20),
+                const SizedBox(height: 30),
 
-                ElevatedButton(
+                OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: const Size(300, 50),
+                    backgroundColor: Color(0xFF6366F1),
+                  ),
                   onPressed: () {
-                    context.read<AuthCubit>().login(
+                    context.read<LoginCubit>().login(
                       emailController.text.trim(),
                       passController.text.trim(),
                     );
                   },
-                  child: const Text("Login"),
+                  child: const Text(
+                    "Login",
+                    style: TextStyle(color: Colors.white),
+                  ),
                 ),
-                const SizedBox(height: 15),
+                const SizedBox(height: 20),
 
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -72,12 +85,7 @@ class LoginScreen extends StatelessWidget {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(
-                            builder: (_) => BlocProvider.value(
-                              value: BlocProvider.of<AuthCubit>(context),
-                              child: SignupScreen(),
-                            ),
-                          ),
+                          MaterialPageRoute(builder: (_) => SignupScreen()),
                         );
                       },
                       child: const Text(
@@ -91,6 +99,7 @@ class LoginScreen extends StatelessWidget {
             ),
           );
         },
+      ),
       ),
     );
   }

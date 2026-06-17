@@ -6,6 +6,7 @@ import 'package:product/cubit/cart/cart_cubit.dart';
 import '../../cubit/cart/add_product/add_cart_cubit.dart';
 import '../../cubit/product/product_cubit.dart';
 import '../../cubit/product/product_state.dart';
+import '../../repository/product_repository.dart';
 
 import 'widgets/cart_icon_badge.dart';
 import 'widgets/home_drawer.dart';
@@ -18,9 +19,16 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final cartCubit = context.read<CartCubit>();
 
-    return BlocProvider<CartAddProductCubit>(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<CartAddProductCubit>(
           create: (_) =>
-              CartAddProductCubit(cartCubit.repository,cartCubit),
+              CartAddProductCubit(cartCubit.repository, cartCubit),
+        ),
+        BlocProvider<ProductCubit>(
+          create: (_) => ProductCubit(ProductRepository()),
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(
           title: Text(

@@ -1,70 +1,35 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../repository/cart_repository.dart';
 import 'auth_state.dart';
 import '../../repository/auth_repository.dart';
 
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository repo;
+  final CartRepository cartRepo;
 
-  AuthCubit(this.repo) : super(AuthInitial()){
+  AuthCubit(this.repo, this.cartRepo) : super(AuthInProgress()){
     checkLogin();
-  }
-
-  Future<void> signup(
-    String email,
-    String password,
-    String address,
-    String phone,
-  ) async {
-    emit(AuthInProgress());
-
-    try {
-      final success = await repo.signup(email, password, address, phone);
-
-      if (!success) {
-        emit(const AuthFailure("User already exists"));
-        return;
-      }
-
-      emit(AuthSuccess(email, address, phone));
-    } catch (e) {
-      emit(AuthFailure(e.toString()));
-    }
-  }
-
-  Future<void> login(String email, String password) async {
-    emit(AuthInProgress());
-
-    try {
-      final user = await repo.login(email, password);
-
-      if (user == null) {
-        emit(const AuthFailure("Invalid email or password"));
-        return;
-      }
-
-      emit(AuthSuccess(user.email, user.address, user.phone));
-    } catch (e) {
-      emit(AuthFailure(e.toString()));
-    }
   }
 
   Future<void> logout() async {
     await repo.logout();
+    cartRepo.updateUser('');
     emit(AuthInitial());
   }
 
   Future<void> checkLogin() async {
     final user = repo.getCurrentUser();
+    final firebaseUser = FirebaseAuth.instance.currentUser;
 
-    if (user != null) {
-      emit(
-        AuthSuccess(
-          user.email,
-          user.address,
-          user.phone,
-        ),
-      );
+    if (user != null && firebaseUser != null) {
+      cartRepo.updateUser(firebaseUser.uid);
+
+      emit(AuthSuccess(user.email, user.address, user.phone));
+
+      cartRepo.loadCart();
     } else {
+      cartRepo.updateUser('');
       emit(AuthInitial());
     }
   }

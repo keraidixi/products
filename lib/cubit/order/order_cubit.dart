@@ -2,14 +2,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import '../../models/cart_item_model.dart';
 import '../../models/order_model.dart';
+import '../cart/cart_cubit.dart';
 import 'order_state.dart';
 
 class OrderCubit extends Cubit<OrderState> {
   final Box _ordersBox;
+  final CartCubit _cartCubit;
 
-  OrderCubit(this._ordersBox) : super(OrderInitial());
+  OrderCubit(this._ordersBox, this._cartCubit) : super(OrderInitial());
 
-  void loadOrders(String userEmail) {
+  void loadOrders(String userId) {
     emit(OrderInProgress());
 
     try {
@@ -23,7 +25,7 @@ class OrderCubit extends Cubit<OrderState> {
         if (rawData != null) {
           final order = OrderModel.fromJson(Map<String, dynamic>.from(rawData));
 
-          if (order.email == userEmail) {
+          if (order.userId == userId) {
             orders.add(order);
           }
         }
@@ -38,10 +40,10 @@ class OrderCubit extends Cubit<OrderState> {
   }
 
   void placeOrder(
-    List<CartItemModel> items,
-    double totalAmount,
-    String email,
-  ) async {
+      List<CartItemModel> items,
+      double totalAmount,
+      String email,
+      ) async {
     final currentState = state;
     List<OrderModel> currentOrders = [];
     if (currentState is OrderSuccess) {
@@ -55,13 +57,16 @@ class OrderCubit extends Cubit<OrderState> {
       final orderId = 'ORD-${DateTime.now().millisecondsSinceEpoch}';
       final newOrder = OrderModel(
         id: orderId,
-        email: email,
+        userId: email,
         items: items,
         totalAmount: totalAmount,
         orderDateTime: DateTime.now(),
       );
 
       await _ordersBox.put(orderId, newOrder.toJson());
+
+      await _cartCubit.clearCart();
+
       currentOrders.insert(0, newOrder);
       emit(OrderSuccess(currentOrders));
     } catch (e) {

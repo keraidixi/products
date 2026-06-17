@@ -7,12 +7,9 @@ import 'package:firebase_core/firebase_core.dart';
 
 import 'cubit/auth/auth_cubit.dart';
 import 'cubit/cart/cart_cubit.dart';
-import 'cubit/order/order_cubit.dart';
 import 'cubit/auth/auth_state.dart';
-import 'cubit/product/product_cubit.dart';
 
-import 'models/user_model.dart';
-import 'repository/product_repository.dart';
+import 'models/auth_model.dart';
 import 'repository/cart_repository.dart';
 import 'repository/auth_repository.dart';
 import 'screens/login/login_screen.dart';
@@ -64,64 +61,83 @@ class MyApp extends StatelessWidget {
     final cartRepository = CartRepository(cartBox);
     final authRepository = AuthRepository(userBox);
 
-    return MultiBlocProvider(
+    return MultiRepositoryProvider(
       providers: [
         RepositoryProvider<CartRepository>(create: (_) => cartRepository),
-        BlocProvider<CartCubit>(
-          create: (context) => CartCubit(cartRepository),
-        ),
-        BlocProvider<OrderCubit>(create: (context) => OrderCubit(ordersBox)),
-        BlocProvider<AuthCubit>(create: (context) => AuthCubit(authRepository)),
-        BlocProvider<ProductCubit>(
-          create: (_) => ProductCubit(ProductRepository()),
-        ),
+        RepositoryProvider<AuthRepository>(create: (_) => authRepository),
       ],
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-
-        themeMode: ThemeMode.dark,
-
-        darkTheme: ThemeData(
-          useMaterial3: true,
-          brightness: Brightness.dark,
-
-          scaffoldBackgroundColor: const Color(0xFF0F172A),
-
-          colorScheme: ColorScheme.fromSeed(
-            seedColor: const Color(0xFF6366F1),
-            brightness: Brightness.dark,
-            surface: const Color(0xFF1E293B),
-            primary: const Color(0xFF818CF8),
-            secondary: const Color(0xFF34D399),
-            tertiary: const Color(0xFFFBBF24),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<CartCubit>(
+            create: (context) => CartCubit(cartRepository),
           ),
+          BlocProvider<AuthCubit>(
+            create: (context) => AuthCubit(authRepository, cartRepository),
+          ),
+        ],
+        child: MaterialApp(
+          debugShowCheckedModeBanner: false,
 
-          textTheme: GoogleFonts.outfitTextTheme(ThemeData.dark().textTheme),
+          themeMode: ThemeMode.dark,
 
-          appBarTheme: AppBarTheme(
-            backgroundColor: const Color(0xFF0F172A),
-            elevation: 0,
-            centerTitle: true,
-            titleTextStyle: GoogleFonts.outfit(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
+          darkTheme: ThemeData(
+            useMaterial3: true,
+            brightness: Brightness.dark,
+
+            scaffoldBackgroundColor: const Color(0xFF0F172A),
+
+            colorScheme: ColorScheme.fromSeed(
+              seedColor: const Color(0xFF6366F1),
+              brightness: Brightness.dark,
+              surface: const Color(0xFF1E293B),
+              primary: const Color(0xFF818CF8),
+              secondary: const Color(0xFF34D399),
+              tertiary: const Color(0xFFFBBF24),
+            ),
+
+            textTheme: GoogleFonts.outfitTextTheme(ThemeData.dark().textTheme),
+
+            appBarTheme: AppBarTheme(
+              backgroundColor: const Color(0xFF0F172A),
+              elevation: 0,
+              centerTitle: true,
+              titleTextStyle: GoogleFonts.outfit(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+
+            navigationBarTheme: const NavigationBarThemeData(
+              backgroundColor: Colors.transparent,
             ),
           ),
 
-          navigationBarTheme: const NavigationBarThemeData(
-            backgroundColor: Colors.transparent,
+          home: BlocListener<AuthCubit, AuthState>(
+            listener: (context, state) {
+              if (state is AuthSuccess) {
+                context.read<CartCubit>().refreshCart();
+              }
+            },
+            child: BlocBuilder<AuthCubit, AuthState>(
+              builder: (context, state) {
+                if (state is AuthSuccess) {
+                  return const HomeScreen();
+                }
+                if (state is AuthInProgress) {
+                  return const Scaffold(
+                    backgroundColor: Color(0xFF0F172A),
+                    body: Center(
+                      child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation(Color(0xFF818CF8)),
+                      ),
+                    ),
+                  );
+                }
+                return LoginScreen();
+              },
+            ),
           ),
-        ),
-
-        home: BlocBuilder<AuthCubit, AuthState>(
-          builder: (context, state) {
-            if (state is AuthSuccess) {
-              return const HomeScreen();
-            }
-
-            return LoginScreen();
-          },
         ),
       ),
     );
