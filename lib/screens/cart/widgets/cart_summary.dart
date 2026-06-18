@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:product/cubit/cart/cart_cubit.dart';
 import 'package:product/cubit/cart/cart_state.dart';
 
+import '../../../cubit/order/order_cubit.dart';
 import 'order_dialog.dart';
 
 class CartSummary extends StatelessWidget {
@@ -56,7 +57,10 @@ class CartSummary extends StatelessWidget {
                     showDialog(
                       context: context,
                       barrierDismissible: false,
-                      builder: (_) => const OrderLoadingDialog(),
+                      builder: (_) => BlocProvider.value(
+                        value: context.read<OrderCubit>(),
+                        child: const OrderLoadingDialog(),
+                      ),
                     );
                   },
                   style: ElevatedButton.styleFrom(

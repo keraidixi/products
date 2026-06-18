@@ -47,12 +47,6 @@ class AuthRepository {
   }
 
   Future<UserModel?> login(String email, String password) async {
-    final userExists = box.values.any((user) => user.email == email);
-
-    if (!userExists) {
-      throw Exception("Please signup first");
-    }
-
     try {
       final credential = await _auth.signInWithEmailAndPassword(
         email: email,
@@ -60,8 +54,16 @@ class AuthRepository {
       );
 
       return box.get(credential.user!.uid);
-    } on FirebaseAuthException {
-      throw Exception("Invalid email or password");
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'invalid-credential') {
+        throw Exception("Please signup first");
+      } else if (e.code == 'wrong-password') {
+        throw Exception("Wrong password");
+      }  else if (e.code == 'invalid-email') {
+        throw Exception("Invalid email format");
+      }
+
+      throw Exception(e.message ?? "Login failed");
     }
   }
 

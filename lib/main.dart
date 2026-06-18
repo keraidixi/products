@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,15 +11,26 @@ import 'cubit/cart/cart_cubit.dart';
 import 'cubit/auth/auth_state.dart';
 
 import 'models/auth_model.dart';
+import 'notification.dart';
 import 'repository/cart_repository.dart';
 import 'repository/auth_repository.dart';
 import 'screens/login/login_screen.dart';
 import 'screens/home/home_screen.dart';
 
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
+
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+
+  await NotificationService.getDeviceToken();
+  await NotificationService.initialize();
 
   await Hive.initFlutter();
 
@@ -76,6 +88,7 @@ class MyApp extends StatelessWidget {
           ),
         ],
         child: MaterialApp(
+          navigatorKey: navigatorKey,
           debugShowCheckedModeBanner: false,
 
           themeMode: ThemeMode.dark,
