@@ -1,13 +1,17 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+@pragma('vm:entry-point')
+Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
+}
 
 class NotificationService {
   static final FirebaseMessaging _messaging = FirebaseMessaging.instance;
-  static final FlutterLocalNotificationsPlugin _local =
-      FlutterLocalNotificationsPlugin();
+  static final FlutterLocalNotificationsPlugin _local = FlutterLocalNotificationsPlugin();
 
   static const AndroidNotificationChannel channel = AndroidNotificationChannel(
     'high_importance_channel',
@@ -17,11 +21,17 @@ class NotificationService {
   );
 
   static Future<void> initialize() async {
+    await _messaging.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
     await _messaging.requestPermission(alert: true, badge: true, sound: true);
 
     await _local
         .resolvePlatformSpecificImplementation<
-          AndroidFlutterLocalNotificationsPlugin>()
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(channel);
 
     const settings = InitializationSettings(
@@ -30,24 +40,28 @@ class NotificationService {
     );
 
     await _local.initialize(settings);
+    await getDeviceToken();
 
     FirebaseMessaging.onMessage.listen((message) {
       _showNotification(message);
     });
-
     FirebaseMessaging.onMessageOpenedApp.listen((message) {
       _handleClick(message);
     });
 
     final initial = await _messaging.getInitialMessage();
     if (initial != null) {
-      _handleClick(initial);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _handleClick(initial);
+      });
     }
   }
 
   static Future<void> _showNotification(RemoteMessage message) async {
-    String title = message.notification?.title ?? message.data['title'] ?? '';
-    String body = message.notification?.body ?? message.data['body'] ?? '';
+    String? title = message.data['title'] ?? message.notification?.title;
+    String body = message.data['body'] ?? message.notification?.body ?? '';
+
+    debugPrint("Showing notification - Title: $title, Body: $body");
 
     await _local.show(
       message.hashCode,
@@ -60,8 +74,10 @@ class NotificationService {
           channelDescription: channel.description,
           importance: Importance.max,
           priority: Priority.high,
+          category: AndroidNotificationCategory.message,
         ),
       ),
+      payload: message.data['screen'],
     );
   }
 

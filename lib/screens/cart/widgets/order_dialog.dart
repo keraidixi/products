@@ -36,17 +36,17 @@ class OrderLoadingDialog extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return const Center(
+        return Center(
           child: Card(
-            color: Color(0xFF1E293B),
+            color: Theme.of(context).colorScheme.surface,
             child: Padding(
-              padding: EdgeInsets.all(24),
+              padding: const EdgeInsets.all(24),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation(
-                      Color(0xFF34D399),
+                      Theme.of(context).colorScheme.secondary,
                     ),
                   ),
                   SizedBox(height: 16),

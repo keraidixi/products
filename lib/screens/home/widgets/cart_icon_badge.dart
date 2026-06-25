@@ -36,8 +36,8 @@ class CartIconBadge extends StatelessWidget {
                 top: 6,
                 child: Container(
                   padding: const EdgeInsets.all(4),
-                  decoration: const BoxDecoration(
-                    color: Color(0xFF34D399),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondary,
                     shape: BoxShape.circle,
                   ),
                   constraints: const BoxConstraints(

@@ -29,9 +29,9 @@ class CartSummary extends StatelessWidget {
 
         return Container(
           padding: const EdgeInsets.all(20),
-          decoration: const BoxDecoration(
-            color: Color(0xFF1E293B),
-            borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -43,7 +43,7 @@ class CartSummary extends StatelessWidget {
               _row(
                 'Total Price',
                 '\$${totalPrice.toStringAsFixed(2)}',
-                valueColor: const Color(0xFFFBBF24),
+                valueColor: Theme.of(context).colorScheme.tertiary,
                 fontSize: 20,
               ),
               const SizedBox(height: 16),
@@ -64,7 +64,7 @@ class CartSummary extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6366F1),
+                    backgroundColor: Theme.of(context).colorScheme.primary,
                   ),
                   child: const Text(
                     'Place Order',

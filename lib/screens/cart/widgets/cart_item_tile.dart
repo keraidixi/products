@@ -45,7 +45,7 @@ class CartItemTile extends StatelessWidget {
             final isLoading = qtyState is CartQuantityInProgress;
 
             return ListTile(
-              tileColor: const Color(0xFF1E293B),
+              tileColor: Theme.of(context).colorScheme.surface,
               contentPadding: const EdgeInsets.all(10),
 
               leading: ClipRRect(
@@ -70,7 +70,7 @@ class CartItemTile extends StatelessWidget {
 
               subtitle: Text(
                 "\$${(product.price * item.quantity).toStringAsFixed(2)}",
-                style: const TextStyle(color: Colors.greenAccent),
+                style: TextStyle(color: Theme.of(context).colorScheme.secondary),
               ),
 
               trailing: Wrap(

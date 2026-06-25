@@ -12,12 +12,7 @@ class ProductModel {
   });
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'name': name,
-      'price': price,
-      'imageUrl': imageUrl,
-    };
+    return {'id': id, 'name': name, 'price': price, 'imageUrl': imageUrl};
   }
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
@@ -26,6 +21,15 @@ class ProductModel {
       name: json['name'] as String,
       price: (json['price'] as num).toDouble(),
       imageUrl: json['imageUrl'] as String,
+    );
+  }
+
+  factory ProductModel.fromApiJson(Map<String, dynamic> json) {
+    return ProductModel(
+      id: json['id'].toString(),
+      name: json['title'] as String,
+      price: (json['price'] as num).toDouble(),
+      imageUrl: json['image'] as String,
     );
   }
 

@@ -17,11 +17,6 @@ import 'repository/auth_repository.dart';
 import 'screens/login/login_screen.dart';
 import 'screens/home/home_screen.dart';
 
-@pragma('vm:entry-point')
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-}
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -29,7 +24,6 @@ void main() async {
 
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
 
-  await NotificationService.getDeviceToken();
   await NotificationService.initialize();
 
   await Hive.initFlutter();
@@ -138,11 +132,11 @@ class MyApp extends StatelessWidget {
                   return const HomeScreen();
                 }
                 if (state is AuthInProgress) {
-                  return const Scaffold(
-                    backgroundColor: Color(0xFF0F172A),
+                  return Scaffold(
+                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
                     body: Center(
                       child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation(Color(0xFF818CF8)),
+                        valueColor: AlwaysStoppedAnimation(Theme.of(context).colorScheme.primary),
                       ),
                     ),
                   );

@@ -25,7 +25,7 @@ class _OrderSuccessDialogState extends State<OrderSuccessDialog> {
   Widget build(BuildContext context) {
     return Center(
       child: Card(
-        color: const Color(0xFF1E293B),
+        color: Theme.of(context).colorScheme.surface,
         margin: const EdgeInsets.symmetric(horizontal: 32),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
         child: Padding(
@@ -33,10 +33,10 @@ class _OrderSuccessDialogState extends State<OrderSuccessDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(
+              Icon(
                 Icons.check_circle_outline,
                 size: 70,
-                color: Color(0xFF34D399),
+                color: Theme.of(context).colorScheme.secondary,
               ),
               const SizedBox(height: 20),
               Text(

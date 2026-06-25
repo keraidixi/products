@@ -19,7 +19,7 @@ class ProductCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B),
+        color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: Colors.white10),
       ),
@@ -77,18 +77,15 @@ class ProductCard extends StatelessWidget {
                       child: ElevatedButton.icon(
                         onPressed: isLoading ? null : () => _addToCart(context),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: const Color(0xFF6366F1),
+                          backgroundColor: Theme.of(context).colorScheme.primary,
                           foregroundColor: Colors.white,
-                          disabledBackgroundColor: const Color(
-                            0xFF6366F1,
-                          ).withValues(alpha: 0.7),
+                          disabledBackgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.7),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                           padding: EdgeInsets.zero,
                         ),
-                        icon: isLoading
-                            ? const SizedBox(
+                        icon: isLoading ? const SizedBox(
                           width: 14,
                           height: 14,
                           child: CircularProgressIndicator(
@@ -96,7 +93,7 @@ class ProductCard extends StatelessWidget {
                             strokeWidth: 2,
                           ),
                         )
-                            : const Icon(Icons.add_shopping_cart, size: 16),
+                            : const Icon(Icons.shopping_cart, size: 16),
                         label: Text(
                           isLoading ? 'Adding...' : 'Add to Cart',
                           style: const TextStyle(fontSize: 12),
